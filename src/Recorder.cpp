@@ -6,7 +6,8 @@
 namespace rosneuro {
 
 Recorder::Recorder(void) : p_nh_("~") {
-	this->topic_		 = "neurodata";
+	this->topic_data_	 = "neurodata";
+	this->topic_evt_	 = "/events/bus";
 	this->is_frame_set_  = false;
 	this->autostart_	 = false;
 	this->state_		 = Recorder::IS_IDLE;
@@ -29,7 +30,8 @@ bool Recorder::configure(void) {
 	ros::param::param("~autostart", this->autostart_, false);
 
 
-	this->sub_ = this->nh_.subscribe(this->topic_, 1000, &Recorder::on_received_data, this);
+	this->sub_data_ = this->nh_.subscribe(this->topic_data_, 1000, &Recorder::on_received_data, this);
+	this->sub_evt_  = this->nh_.subscribe(this->topic_evt_, 1000, &Recorder::on_received_event, this);
 	this->srv_info_   = this->nh_.serviceClient<rosneuro_msgs::GetAcquisitionInfo>("/acquisition/get_info");
 	this->srv_record_ = this->p_nh_.advertiseService("record", &Recorder::on_request_record, this);
 	this->srv_quit_   = this->p_nh_.advertiseService("quit",  &Recorder::on_request_quit, this);
@@ -76,6 +78,23 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 		ROS_WARN("Not all data has been written");
 	}
 
+}
+
+void Recorder::on_received_event(const rosneuro_msgs::NeuroEvent& msg) {
+
+	double onset;
+
+	if(this->state_ != Recorder::IS_READY) {
+		return;
+	}
+
+	onset = msg.header.stamp.toSec() - this->starttime_;
+	if(this->writer_->AddEvent(msg.event, onset, msg.duration) == false) {
+		ROS_ERROR("Cannot add event %d: %s", msg.event, strerror(errno)); 
+		return;
+	}
+
+	ROS_INFO("Added event %d at %fs (duration=%f)", msg.event, onset, msg.duration);
 }
 
 bool Recorder::Run(void) {
@@ -181,6 +200,8 @@ unsigned int Recorder::on_writer_starting(void) {
 		return Recorder::IS_QUIT;
 	}
 	ROS_INFO("Writer correctly setup");
+
+	this->starttime_ = ros::Time::now().toSec();
 
 	return Recorder::IS_READY;
 }

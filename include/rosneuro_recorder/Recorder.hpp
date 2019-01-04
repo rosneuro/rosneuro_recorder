@@ -6,6 +6,7 @@
 #include "rosneuro_recorder/FactoryWriter.hpp"
 #include "rosneuro_data/NeuroData.hpp"
 #include "rosneuro_data/NeuroDataTools.hpp"
+#include "rosneuro_msgs/NeuroEvent.h"
 #include "rosneuro_msgs/NeuroFrame.h"
 #include "rosneuro_msgs/NeuroDataInfo.h"
 #include "rosneuro_msgs/GetAcquisitionInfo.h"
@@ -19,7 +20,6 @@ class Recorder {
 
 		bool configure(void);
 
-//		bool WaitForInfo(void);
 		bool Run(void);
 
 
@@ -28,6 +28,7 @@ class Recorder {
 
 	private:
 		void on_received_data(const rosneuro_msgs::NeuroFrame& msg);
+		void on_received_event(const rosneuro_msgs::NeuroEvent& msg);
 
 		unsigned int on_writer_idle(void);
 		unsigned int on_writer_waiting(void);
@@ -43,12 +44,16 @@ class Recorder {
 	private:
 		ros::NodeHandle		nh_;
 		ros::NodeHandle		p_nh_;
-		ros::Subscriber		sub_;
+		ros::Subscriber		sub_data_;
+		ros::Subscriber		sub_evt_;
 		ros::ServiceServer	srv_record_;
 		ros::ServiceServer	srv_quit_;
 		ros::ServiceClient	srv_info_;
-		std::string			topic_;
+		std::string			topic_data_;
+		std::string			topic_evt_;
 		unsigned int		state_;
+
+		double				starttime_;
 
 		FactoryWriter			factory_;
 		std::unique_ptr<Writer> writer_;

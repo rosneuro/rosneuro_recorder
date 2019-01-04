@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
 			 roscpp 
 			 std_msgs
 			 rosneuro_data
+			 rosneuro_events
 			 rosneuro_msgs)
 
 find_package(PkgConfig)
@@ -25,6 +26,7 @@ catkin_package(
   	roscpp
 	std_msgs
 	rosneuro_data
+	rosneuro_events
 	rosneuro_msgs
 
   DEPENDS

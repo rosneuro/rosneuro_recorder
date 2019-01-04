@@ -24,7 +24,7 @@ class Writer {
 		virtual int Write(int nswrite) = 0;
 
 
-		//virtual bool AddEvent(void);
+		virtual bool AddEvent(int event, double onset, double duration) = 0;
 		
 		virtual std::string GetName(void);
 		virtual void Who(void);

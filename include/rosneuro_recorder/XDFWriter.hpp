@@ -18,6 +18,8 @@ class XDFWriter : public Writer {
 		bool Close(void);
 		int Write(int nswrite);
 
+		bool AddEvent(int event, double onset, double duration);
+
 	private:
 		bool setup_xdf_group(NeuroDataInfo* info, unsigned int index);
 		xdffiletype get_filetype(const std::string& filename);

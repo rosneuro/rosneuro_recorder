@@ -17,6 +17,8 @@ class DummyWriter : public Writer {
 		bool Close(void);
 		int Write(int nswrite);
 
+		bool AddEvent(int event, double onset, double duration);
+
 };
 
 }

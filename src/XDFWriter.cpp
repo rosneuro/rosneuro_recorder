@@ -160,6 +160,23 @@ xdffiletype XDFWriter::get_filetype(const std::string& filename) {
 
 }
 
+bool XDFWriter::AddEvent(int event, double onset, double duration) {
+
+	bool   isopen;
+	int	   evttype;
+
+	isopen = (this->file_ != nullptr);
+	evttype = xdf_add_evttype(this->file_, event, "");
+
+	if(evttype == -1)
+		return false;
+
+	if(xdf_add_event(this->file_, evttype, onset, duration) == -1)
+		return false;
+
+	return true;
+}
+
 }
 
 

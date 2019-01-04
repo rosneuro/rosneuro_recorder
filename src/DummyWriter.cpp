@@ -28,6 +28,10 @@ int DummyWriter::Write(int nswrite) {
 	return 0;
 }
 
+bool DummyWriter::AddEvent(int event, double onset, double duration) {
+	return true;
+}
+
 }
 
 
