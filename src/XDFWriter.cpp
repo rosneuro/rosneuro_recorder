@@ -115,6 +115,10 @@ bool XDFWriter::Open(const std::string& filename) {
 }
 
 bool XDFWriter::Close(void) {
+	
+	if(this->file_ == nullptr)
+		return true;
+
 	if(xdf_close(this->file_) == -1) {
 		std::cerr<<"Cannot close file: " << strerror(errno) << std::endl;
 		return false;
