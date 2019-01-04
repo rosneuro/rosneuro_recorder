@@ -78,39 +78,6 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 
 }
 
-
-/*
-bool Recorder::WaitForInfo(void) {
-	
-	ros::Rate r(60);
-	rosneuro_msgs::GetAcquisitionInfo info;
-	
-	while( (this->srv_info_.call(info) == false) && ros::ok()) {
-		ROS_WARN_THROTTLE(5.0f, "Cannot retrieve data info: waiting...");
-		ros::spinOnce();
-		r.sleep();
-	}
-
-	// Configure frame from service message
-	if(NeuroDataTools::ConfigureNeuroFrame(info.response.frame, this->frame_) == false)
-		ROS_ERROR("Cannot configure frame");
-	
-	// Reserve frame data
-	this->frame_.eeg.reserve(this->frame_.eeg.nsamples(), this->frame_.eeg.nchannels());
-	this->frame_.exg.reserve(this->frame_.exg.nsamples(), this->frame_.exg.nchannels());
-	this->frame_.tri.reserve(this->frame_.tri.nsamples(), this->frame_.tri.nchannels());
-
-	// Debug - Dump device configuration
-	this->frame_.eeg.dump();
-	this->frame_.exg.dump();
-	this->frame_.tri.dump();
-
-	this->is_configured_ = true;
-
-}
-*/
-
-
 bool Recorder::Run(void) {
 
 	bool quit = false;
@@ -258,43 +225,6 @@ bool Recorder::on_request_quit(std_srvs::Empty::Request& req,
 	return true;
 }
 
-/*
-bool Recorder::Run(void) {
-
-	ros::Rate r(60);
-
-	// Configure Recorder
-	this->configure();
-	ROS_INFO("Recorder succesfully configured");
-	
-	// Request device/data info (loop)
-	this->WaitForInfo();
-	ROS_INFO("Data information received from acquisition");
-	
-	// Open writer
-	if(this->writer_->Open(this->filename_) == false) {
-		ROS_ERROR("Cannot open the file: %s", this->filename_.c_str());
-		return false;
-	}
-	ROS_INFO("File open: %s", this->filename_.c_str());
-
-	// Setup Writer
-	if(this->writer_->Setup() == false) {
-		ROS_ERROR("Cannot setup the writer");
-		return false;
-	}
-	ROS_INFO("Writer correctly setup");
-	
-	while(ros::ok()) {
-		ros::spinOnce();
-		r.sleep();
-	}
-
-	return true;
-
-
-}
-*/
 
 }
 
