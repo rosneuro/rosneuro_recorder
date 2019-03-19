@@ -10,6 +10,7 @@ Recorder::Recorder(void) : p_nh_("~") {
 	this->topic_evt_	 = "/events/bus";
 	this->is_frame_set_  = false;
 	this->autostart_	 = false;
+	this->firstdata_	 = false;
 	this->state_		 = Recorder::IS_IDLE;
 }
 
@@ -64,6 +65,15 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 		return;
 	}
 
+	if(firstdata_ == false) {
+		// Created by L.Tonin  <luca.tonin@epfl.ch> on 17/03/19 15:38:31	
+		// Removing the framerate from starting time
+		printf("offset delay: %f\n", (float)msg.eeg.info.nsamples/(float)msg.sr);
+		this->starttime_ = ros::Time::now().toSec() - (float)msg.eeg.info.nsamples/(float)msg.sr;
+		//this->starttime_ = msg.header.stamp.toSec() - (float)msg.eeg.info.nsamples/(float)msg.sr;
+		//this->starttime_ = msg.header.stamp.toSec();
+		firstdata_ = true;
+	}
 	ROS_WARN_ONCE("First NeuroFrame received. The recording started");
 
 	// Convert message frame to message data
@@ -77,6 +87,7 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 	} else if (wsize != gsize) {
 		ROS_WARN("Not all data has been written");
 	}
+
 
 }
 
@@ -100,7 +111,7 @@ void Recorder::on_received_event(const rosneuro_msgs::NeuroEvent& msg) {
 bool Recorder::Run(void) {
 
 	bool quit = false;
-	ros::Rate r(60);
+	ros::Rate r(8192);
 
 	// Configure Recorder
 	this->configure();
@@ -201,7 +212,6 @@ unsigned int Recorder::on_writer_starting(void) {
 	}
 	ROS_INFO("Writer correctly setup");
 
-	this->starttime_ = ros::Time::now().toSec();
 
 	return Recorder::IS_READY;
 }

@@ -53,6 +53,7 @@ class Recorder {
 		std::string			topic_evt_;
 		unsigned int		state_;
 
+		bool				firstdata_;
 		double				starttime_;
 
 		FactoryWriter			factory_;
