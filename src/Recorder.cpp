@@ -68,9 +68,7 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 	if(firstdata_ == false) {
 		// Created by L.Tonin  <luca.tonin@epfl.ch> on 17/03/19 15:38:31	
 		// Removing the framerate from starting time
-		printf("offset delay: %f\n", (float)msg.eeg.info.nsamples/(float)msg.sr);
 		this->starttime_ = ros::Time::now().toSec() - (float)msg.eeg.info.nsamples/(float)msg.sr;
-		//this->starttime_ = msg.header.stamp.toSec() - (float)msg.eeg.info.nsamples/(float)msg.sr;
 		//this->starttime_ = msg.header.stamp.toSec();
 		firstdata_ = true;
 	}
