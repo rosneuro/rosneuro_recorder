@@ -40,6 +40,8 @@ class Recorder {
 							 std_srvs::Empty::Response& res);
 
 		std::string get_datetime(void);
+		std::string get_filename(std::string subject, std::string modality, 
+								 std::string task, std::string extra);
 
 	private:
 		ros::NodeHandle		nh_;

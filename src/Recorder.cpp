@@ -22,12 +22,38 @@ Recorder::~Recorder(void) {
 bool Recorder::configure(void) {
 
 	unsigned int wrttype = WriterType::XDFWRT;
+	const char* default_path;
+	std::string filepath;
+	std::string subject;
+	std::string task;
+	std::string modality;
+	std::string extra;
+	std::string default_filename;
 
 	this->writer_ = this->factory_.createWriter(&(this->frame_), wrttype);
-	
-	if(ros::param::get("~filename", this->filename_) == false) {
-		this->filename_ = "/home/ltonin/" + this->get_datetime() + ".test.gdf";
+
+	// Retrieve filepath (default: $ROSNEURO_DATA | then: $HOME)
+	if( (default_path = std::getenv("ROSNEURO_DATA")) == nullptr) {
+		default_path = std::getenv("HOME");
 	}
+	ros::param::param<std::string>("~filepath", filepath, std::string(default_path));
+
+	// Retrieve subject, task, modality, extra (if exist) 
+	ros::param::get("/protocol/subject",  subject);
+	ros::param::get("/protocol/modality", modality);
+	ros::param::get("/protocol/task",	  task);
+	ros::param::get("/protocol/extra",    extra);
+
+	// Create default filename
+	default_filename = get_filename(subject, modality, task, extra);
+
+	// Retrieve filename from param server (if exists)
+	ros::param::param<std::string>("~filename", this->filename_, default_filename);
+
+	// Prepend filepath to filename	
+	this->filename_ = filepath + "/" + this->filename_;
+	ROS_INFO("Data will be recorded in: %s", this->filename_.c_str());
+	
 	ros::param::param("~autostart", this->autostart_, false);
 
 
@@ -39,6 +65,31 @@ bool Recorder::configure(void) {
 	
 
 	return true;
+}
+
+std::string Recorder::get_filename(std::string subject, std::string modality, 
+								   std::string task, std::string extra) {
+
+	std::string osubject  = "UNKNOWN.";
+	std::string ctime     = this->get_datetime() + ".";
+	std::string omodality = "neurodata.";
+	std::string otask;
+	std::string oextra;
+
+	if(subject.empty() == false)
+		osubject = subject + ".";
+
+	if(modality.empty() == false)
+		omodality = modality + ".";
+	
+	if(task.empty() == false)
+		otask = task + ".";
+	
+	if(extra.empty() == false)
+		oextra = extra + ".";
+
+	return osubject + ctime + omodality + otask + oextra + "gdf";
+
 }
 
 std::string Recorder::get_datetime(void) {
@@ -72,7 +123,7 @@ void Recorder::on_received_data(const rosneuro_msgs::NeuroFrame& msg) {
 		//this->starttime_ = msg.header.stamp.toSec();
 		firstdata_ = true;
 	}
-	ROS_WARN_ONCE("First NeuroFrame received. The recording started");
+	ROS_WARN_ONCE("First NeuroFrame received. The recording started. Message id number: %d", msg.header.seq);
 
 	// Convert message frame to message data
 	NeuroDataTools::ToNeuroFrame(msg, this->frame_);
