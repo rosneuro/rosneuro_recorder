@@ -72,8 +72,8 @@ std::string Recorder::get_filename(std::string subject, std::string modality,
 
 	std::string osubject  = "UNKNOWN.";
 	std::string ctime     = this->get_datetime() + ".";
-	std::string omodality = "neurodata.";
-	std::string otask;
+	std::string omodality = "neuromodality.";
+	std::string otask     = "neurotask.";
 	std::string oextra;
 
 	if(subject.empty() == false)
