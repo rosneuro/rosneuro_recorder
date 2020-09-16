@@ -1,0 +1,25 @@
+<launch>
+
+	<arg name="autostart" default="false"/>
+	<arg name="filepath"  default=""/>
+	<arg name="filename"  default=""/>
+	<arg name="subject"   default=""/>
+	<arg name="modality"  default=""/>
+	<arg name="task"      default=""/>
+	<arg name="extra"     default=""/>
+
+
+
+	<!-- Protocol parameters -->
+	<rosparam param="/protocol/subject"	 subst_value="True">$(arg subject)</rosparam>
+	<rosparam param="/protocol/modality" subst_value="True">$(arg modality)</rosparam>
+	<rosparam param="/protocol/task"	 subst_value="True">$(arg task)</rosparam>
+	<rosparam param="/protocol/extra"	 subst_value="True">$(arg extra)</rosparam>
+
+	<!-- Recorder node -->
+	<node pkg="rosneuro_recorder" type="recorder" name="recorder" output="screen" required="true">
+		<rosparam param="autostart" subst_value="True">$(arg autostart)</rosparam>
+		<rosparam param="filepath" subst_value="True">$(arg filepath)</rosparam>
+		<rosparam param="filename" subst_value="True">$(arg filename)</rosparam>
+	</node>
+</launch>
