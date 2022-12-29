@@ -67,5 +67,15 @@ target_link_libraries(recorder rosneuro_recorder)
 add_executable(test_writerfactory src/test_writerfactory.cpp)
 target_link_libraries(test_writerfactory rosneuro_recorder)
 
+#################
+##   Install   ##
+#################
+install(TARGETS ${PROJECT_NAME}
+	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(TARGETS recorder
+	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 
