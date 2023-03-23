@@ -1,20 +1,23 @@
 <launch>
 
-	<arg name="autostart" default="false"/>
+	<!-- acquisition arguments -->
+	<arg name="plugin" default='rosneuro::EGDDevice'/>
+	<arg name="devarg" />
+	<arg name="framerate" default='16'/>
+	<arg name="samplerate" default='512'/>
+	
+	<!-- recorder arguments -->
+	<arg name="autostart" default="true"/>
 	<arg name="filepath"  default=""/>
 	<arg name="filename"  default=""/>
-	<arg name="subject"   default=""/>
-	<arg name="modality"  default=""/>
-	<arg name="task"      default=""/>
-	<arg name="extra"     default=""/>
 
-
-
-	<!-- Protocol parameters -->
-	<rosparam param="/protocol/subject"	 subst_value="True">$(arg subject)</rosparam>
-	<rosparam param="/protocol/modality" subst_value="True">$(arg modality)</rosparam>
-	<rosparam param="/protocol/task"	 subst_value="True">$(arg task)</rosparam>
-	<rosparam param="/protocol/extra"	 subst_value="True">$(arg extra)</rosparam>
+	<!-- acquisition node -->
+	<node name="acquisition" pkg="rosneuro_acquisition" type="acquisition" output="screen" required="true">
+  	  <param name="~plugin" 	  value="$(arg plugin)"/>
+  	  <param name="~devarg" 	  value="$(arg devarg)"/>
+  	  <param name="~samplerate" value="$(arg samplerate)"/>
+  	  <param name="~framerate"  value="$(arg framerate)"/>
+  	</node>
 
 	<!-- Recorder node -->
 	<node pkg="rosneuro_recorder" type="recorder" name="recorder" output="screen" required="true">
