@@ -4,6 +4,7 @@
 #include <xdfio.h>
 #include "rosneuro_recorder/Writer.hpp"
 #include "rosneuro_data/NeuroData.hpp"
+#include <gtest/gtest_prod.h>
 
 namespace rosneuro {
 
@@ -27,7 +28,13 @@ class XDFWriter : public Writer {
 	protected:
 		struct xdf*	file_;
 		size_t*	strides_;
-	
+
+        FRIEND_TEST(XDFWriterTestSuite, TestConstructor);
+        FRIEND_TEST(XDFWriterTestSuite, TestSetupSuccess);
+        FRIEND_TEST(XDFWriterTestSuite, TestCloseSuccess);
+        FRIEND_TEST(XDFWriterTestSuite, TestWriteSuccess);
+        FRIEND_TEST(XDFWriterTestSuite, TestWriteFailure);
+
 };
 
 }

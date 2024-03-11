@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
 			 rosneuro_msgs)
 
 find_package(PkgConfig)
-
+find_package(GTest REQUIRED)
 SET(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_library(XDFIO_LIBRARIES xdffileio)
 find_path(XDFIO_INCLUDE_DIRS xdfio.h)
@@ -37,7 +37,25 @@ catkin_package(
 include_directories(${catkin_INCLUDE_DIRS} 
 					${XDFIO_INCLUDE_DIRS}
 					include
-)
+					include/${PROJECT_NAME})
+
+catkin_add_gtest(TestDummyWriter test/test_dummy_writer.cpp)
+target_link_libraries(TestDummyWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestDummyWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+catkin_add_gtest(TestWriter test/test_factory_writer.cpp)
+target_link_libraries(TestWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+catkin_add_gtest(TestXDFWriter test/test_xdf_writer.cpp)
+target_link_libraries(TestXDFWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestXDFWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+catkin_add_gtest(TestRecorder test/test_recorder.cpp)
+target_link_libraries(TestRecorder ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestRecorder ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+include_directories(${GTEST_INCLUDE_DIRS} gmock pthread include include/${PROJECT_NAME}/)
 
 add_library(${PROJECT_NAME}
 	src/Writer.cpp

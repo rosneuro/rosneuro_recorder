@@ -10,6 +10,7 @@
 #include "rosneuro_msgs/NeuroFrame.h"
 #include "rosneuro_msgs/NeuroDataInfo.h"
 #include "rosneuro_msgs/GetAcquisitionInfo.h"
+#include <gtest/gtest_prod.h>
 
 namespace rosneuro {
 
@@ -18,7 +19,7 @@ class Recorder {
 		Recorder(void);
 		virtual ~Recorder(void);
 
-		bool configure(void);
+		virtual bool configure(void);
 
 		bool Run(void);
 
@@ -68,6 +69,9 @@ class Recorder {
 		NeuroFrame					frame_;
 		rosneuro_msgs::NeuroFrame	msg_;
 
+        FRIEND_TEST(RecorderTestSuite, TestConstructor);
+        FRIEND_TEST(RecorderTestSuite, TestOnWriter);
+        FRIEND_TEST(RecorderTestSuite, TestOnRequestRecord);
 };
 
 }

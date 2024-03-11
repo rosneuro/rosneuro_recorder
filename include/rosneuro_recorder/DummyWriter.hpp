@@ -3,6 +3,7 @@
 
 #include "rosneuro_recorder/Writer.hpp"
 #include "rosneuro_data/NeuroData.hpp"
+#include <gtest/gtest_prod.h>
 
 namespace rosneuro {
 
@@ -19,6 +20,7 @@ class DummyWriter : public Writer {
 
 		bool AddEvent(int event, double onset, double duration);
 
+        FRIEND_TEST(DummyWriterTestSuite, TestGetName);
 };
 
 }
