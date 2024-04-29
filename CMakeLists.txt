@@ -39,21 +39,26 @@ include_directories(${catkin_INCLUDE_DIRS}
 					include
 					include/${PROJECT_NAME})
 
-catkin_add_gtest(TestDummyWriter test/test_dummy_writer.cpp)
+catkin_add_gtest(TestDummyWriter test/TestDummyWriter.cpp)
 target_link_libraries(TestDummyWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
 target_link_libraries(TestDummyWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-catkin_add_gtest(TestWriter test/test_factory_writer.cpp)
-target_link_libraries(TestWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
-target_link_libraries(TestWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
+catkin_add_gtest(TestFactoryWriter test/TestFactoryWriter.cpp)
+target_link_libraries(TestFactoryWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestFactoryWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-catkin_add_gtest(TestXDFWriter test/test_xdf_writer.cpp)
+catkin_add_gtest(TestXDFWriter test/TestXdfWriter.cpp)
 target_link_libraries(TestXDFWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
 target_link_libraries(TestXDFWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-catkin_add_gtest(TestRecorder test/test_recorder.cpp)
+catkin_add_gtest(TestRecorder test/TestRecorder.cpp)
 target_link_libraries(TestRecorder ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
 target_link_libraries(TestRecorder ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+catkin_add_gtest(TestWriter test/TestWriter.cpp)
+target_link_libraries(TestWriter ${GTEST_BOTH_LIBRARIES} pthread gmock ${Eigen3_LIBRARIES})
+target_link_libraries(TestWriter ${PROJECT_NAME} ${catkin_LIBRARIES})
+
 
 include_directories(${GTEST_INCLUDE_DIRS} gmock pthread include include/${PROJECT_NAME}/)
 
@@ -78,11 +83,11 @@ add_dependencies(${PROJECT_NAME}
 ## Executables ##
 #################
 
-add_executable(recorder src/recorder.cpp)
+add_executable(recorder example/RunRecorder.cpp)
 target_link_libraries(recorder rosneuro_recorder)
 
 
-add_executable(test_writerfactory src/test_writerfactory.cpp)
+add_executable(test_writerfactory example/RunWriterFactory.cpp)
 target_link_libraries(test_writerfactory rosneuro_recorder)
 
 #################
