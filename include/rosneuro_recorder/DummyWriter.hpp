@@ -6,24 +6,20 @@
 #include <gtest/gtest_prod.h>
 
 namespace rosneuro {
+    class DummyWriter : public Writer {
+        public:
+            DummyWriter(NeuroFrame* frame);
+            virtual ~DummyWriter(void);
 
-class DummyWriter : public Writer {
+            bool Setup(void);
+            bool Open(const std::string& filename);
+            bool Close(void);
+            int Write(int nswrite);
+            bool AddEvent(int event, double onset, double duration);
 
-	public:
-		DummyWriter(NeuroFrame* frame);
-		virtual ~DummyWriter(void);
-
-		bool Setup(void);
-		bool Open(const std::string& filename);
-		bool Close(void);
-		int Write(int nswrite);
-
-		bool AddEvent(int event, double onset, double duration);
-
-        FRIEND_TEST(DummyWriterTestSuite, TestGetName);
-};
-
+        private:
+            FRIEND_TEST(DummyWriterTestSuite, TestGetName);
+    };
 }
-
 
 #endif

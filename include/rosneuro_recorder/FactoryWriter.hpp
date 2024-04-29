@@ -8,17 +8,12 @@
 #include "rosneuro_recorder/DummyWriter.hpp"
 
 namespace rosneuro {
+    enum WriterType {XDFWRT, DUMMYWRT};
+    class FactoryWriter {
+        public:
+            std::unique_ptr<Writer> createWriter(NeuroFrame* frame, unsigned int type = WriterType::XDFWRT);
 
-enum WriterType {XDFWRT, DUMMYWRT};
-
-class FactoryWriter {
-	public:
-		std::unique_ptr<Writer> createWriter(NeuroFrame* frame, unsigned int type = WriterType::XDFWRT);
-
-};
-
-
+    };
 }
-
 
 #endif

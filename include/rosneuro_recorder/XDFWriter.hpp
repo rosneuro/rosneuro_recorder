@@ -7,36 +7,33 @@
 #include <gtest/gtest_prod.h>
 
 namespace rosneuro {
+    class XDFWriter : public Writer {
+        public:
+            XDFWriter(NeuroFrame* frame);
+            virtual ~XDFWriter(void);
 
-class XDFWriter : public Writer {
+            bool Setup(void);
+            bool Open(const std::string& filename);
+            bool Close(void);
+            int Write(int nswrite);
 
-	public:
-		XDFWriter(NeuroFrame* frame);
-		virtual ~XDFWriter(void);
+            bool AddEvent(int event, double onset, double duration);
 
-		bool Setup(void);
-		bool Open(const std::string& filename);
-		bool Close(void);
-		int Write(int nswrite);
+        private:
+            bool setup_xdf_group(NeuroDataInfo* info, unsigned int index);
+            xdffiletype get_filetype(const std::string& filename);
 
-		bool AddEvent(int event, double onset, double duration);
+        protected:
+            struct xdf*	file_;
+            size_t*	strides_;
 
-	private:
-		bool setup_xdf_group(NeuroDataInfo* info, unsigned int index);
-		xdffiletype get_filetype(const std::string& filename);
+            FRIEND_TEST(XDFWriterTestSuite, TestConstructor);
+            FRIEND_TEST(XDFWriterTestSuite, TestSetupSuccess);
+            FRIEND_TEST(XDFWriterTestSuite, TestCloseSuccess);
+            FRIEND_TEST(XDFWriterTestSuite, TestWriteSuccess);
+            FRIEND_TEST(XDFWriterTestSuite, TestWriteFailure);
 
-	protected:
-		struct xdf*	file_;
-		size_t*	strides_;
-
-        FRIEND_TEST(XDFWriterTestSuite, TestConstructor);
-        FRIEND_TEST(XDFWriterTestSuite, TestSetupSuccess);
-        FRIEND_TEST(XDFWriterTestSuite, TestCloseSuccess);
-        FRIEND_TEST(XDFWriterTestSuite, TestWriteSuccess);
-        FRIEND_TEST(XDFWriterTestSuite, TestWriteFailure);
-
-};
-
+    };
 }
 
 
