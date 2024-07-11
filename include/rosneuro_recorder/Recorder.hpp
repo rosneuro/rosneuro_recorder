@@ -10,67 +10,64 @@
 #include "rosneuro_msgs/NeuroFrame.h"
 #include "rosneuro_msgs/NeuroDataInfo.h"
 #include "rosneuro_msgs/GetAcquisitionInfo.h"
+#include <gtest/gtest_prod.h>
 
 namespace rosneuro {
+    class Recorder {
+        public:
+            Recorder(void);
+            virtual ~Recorder(void);
+            virtual bool configure(void);
+            bool Run(void);
 
-class Recorder {
-	public:
-		Recorder(void);
-		virtual ~Recorder(void);
+            enum {IS_IDLE, IS_WAITING, IS_STARTING, IS_READY, IS_QUIT};
 
-		bool configure(void);
+        private:
+            void on_received_data(const rosneuro_msgs::NeuroFrame& msg);
+            void on_received_event(const rosneuro_msgs::NeuroEvent& msg);
 
-		bool Run(void);
+            unsigned int on_writer_idle(void);
+            unsigned int on_writer_waiting(void);
+            unsigned int on_writer_starting(void);
 
+            bool on_request_record(std_srvs::Empty::Request& req,
+                                   std_srvs::Empty::Response& res);
+            bool on_request_quit(std_srvs::Empty::Request& req,
+                                 std_srvs::Empty::Response& res);
 
-	public:
-		enum {IS_IDLE, IS_WAITING, IS_STARTING, IS_READY, IS_QUIT};
+            std::string get_datetime(void);
+            std::string get_filename(std::string subject, std::string modality,
+                                     std::string task, std::string extra);
 
-	private:
-		void on_received_data(const rosneuro_msgs::NeuroFrame& msg);
-		void on_received_event(const rosneuro_msgs::NeuroEvent& msg);
+            ros::NodeHandle		nh_;
+            ros::NodeHandle		p_nh_;
+            ros::Subscriber		sub_data_;
+            ros::Subscriber		sub_evt_;
+            ros::ServiceServer	srv_record_;
+            ros::ServiceServer	srv_quit_;
+            ros::ServiceClient	srv_info_;
+            std::string			topic_data_;
+            std::string			topic_evt_;
+            unsigned int		state_;
 
-		unsigned int on_writer_idle(void);
-		unsigned int on_writer_waiting(void);
-		unsigned int on_writer_starting(void);
+            bool				firstdata_;
+            double				starttime_;
 
-		bool on_request_record(std_srvs::Empty::Request& req,
-							   std_srvs::Empty::Response& res);
-		bool on_request_quit(std_srvs::Empty::Request& req,
-							 std_srvs::Empty::Response& res);
+            FactoryWriter			factory_;
+            std::unique_ptr<Writer> writer_;
 
-		std::string get_datetime(void);
-		std::string get_filename(std::string subject, std::string modality, 
-								 std::string task, std::string extra);
+            std::string		filename_;
+            bool			autostart_;
+            bool			is_frame_set_;
 
-	private:
-		ros::NodeHandle		nh_;
-		ros::NodeHandle		p_nh_;
-		ros::Subscriber		sub_data_;
-		ros::Subscriber		sub_evt_;
-		ros::ServiceServer	srv_record_;
-		ros::ServiceServer	srv_quit_;
-		ros::ServiceClient	srv_info_;
-		std::string			topic_data_;
-		std::string			topic_evt_;
-		unsigned int		state_;
+            NeuroFrame					frame_;
+            rosneuro_msgs::NeuroFrame	msg_;
 
-		bool				firstdata_;
-		double				starttime_;
-
-		FactoryWriter			factory_;
-		std::unique_ptr<Writer> writer_;
-
-		std::string		filename_;
-		bool			autostart_;
-		bool			is_frame_set_;
-		
-		NeuroFrame					frame_;
-		rosneuro_msgs::NeuroFrame	msg_;
-
-};
-
+            FRIEND_TEST(RecorderTestSuite, TestConstructor);
+            FRIEND_TEST(RecorderTestSuite, TestGetFilename);
+            FRIEND_TEST(RecorderTestSuite, TestOnWriter);
+            FRIEND_TEST(RecorderTestSuite, TestOnRequestRecord);
+    };
 }
-
 
 #endif

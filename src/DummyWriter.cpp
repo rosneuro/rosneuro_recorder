@@ -4,34 +4,32 @@
 #include "rosneuro_recorder/DummyWriter.hpp"
 
 namespace rosneuro {
+    DummyWriter::DummyWriter(NeuroFrame* frame) : Writer(frame) {
+        this->name_ = "dummywriter";
+    }
 
-DummyWriter::DummyWriter(NeuroFrame* frame) : Writer(frame) {
-	this->name_ = "dummywriter";
-}
+    DummyWriter::~DummyWriter(void) {
+    }
 
-DummyWriter::~DummyWriter(void) {
-}
+    bool DummyWriter::Setup(void) {
+        return true;
+    }
 
-bool DummyWriter::Setup(void) {
-	return true;
-}
+    bool DummyWriter::Open(const std::string& filename) {
+        return true;
+    }
 
-bool DummyWriter::Open(const std::string& filename) {
-	return true;
-}
+    bool DummyWriter::Close(void) {
+        return true;
+    }
 
-bool DummyWriter::Close(void) {
-	return true;
-}
+    int DummyWriter::Write(int nswrite) {
+        return 0;
+    }
 
-int DummyWriter::Write(int nswrite) {
-	return 0;
-}
-
-bool DummyWriter::AddEvent(int event, double onset, double duration) {
-	return true;
-}
-
+    bool DummyWriter::AddEvent(int event, double onset, double duration) {
+        return true;
+    }
 }
 
 
